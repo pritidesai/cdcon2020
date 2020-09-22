@@ -5,19 +5,19 @@ metadata:
 spec:
   serviceAccountName: cdcon-app-builder
   pipelineRef:
-    name: pipeline-to-build-app-image
+    name: pipeline-to-build-image
   workspaces:
     - name: cdcon-workspace
       persistentVolumeClaim:
         claimName: cdcon-workspace
   params:
-    - name: DOCKERFILE
-      value: "Dockerfile"
+    - name: APP_PATH
+      value: "use-case-1/app"
   resources:
     - name: app-image
       resourceSpec:
         type: image
         params:
           - name: url
-            value: docker.io/${DOCKER_USERNAME}/cdcon-hello-app
+            value: docker.io/${DOCKER_USERNAME}/cdcon-hello-app:latest
 

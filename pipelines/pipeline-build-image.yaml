@@ -1,0 +1,65 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pipeline-to-build-image
+
+spec:
+
+  params:
+    - name: APP_REPO
+      description: "Application repo location"
+      type: string
+      default: "https://github.com/pritidesai/cdcon2020.git"
+    - name: APP_PATH
+      description: "use case location"
+      type: string
+
+  workspaces:
+    - name: cdcon-workspace
+
+  resources:
+    - name: app-image
+      type: image
+
+# Tasks
+  tasks:
+
+    # Git Clone App Repo
+    - name: clone-app-source
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.APP_REPO)
+      workspaces:
+        - name: output
+          workspace: cdcon-workspace
+
+    # Build an application, run after git clone is successful
+    - name: build-app-image
+      taskRef:
+        name: build-image
+      runAfter: [ clone-app-source ]
+      params:
+        - name: APP_PATH
+          value: $(params.APP_PATH)
+      resources:
+        outputs:
+          - name: app-image
+            resource: app-image
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace
+
+    # Deploy App Image
+    - name: deploy-app-image
+      taskRef:
+        name: deploy-using-kubectl
+      runAfter: [ build-app-image ]
+      resources:
+        inputs:
+          - name: app-image
+            resource: app-image
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace

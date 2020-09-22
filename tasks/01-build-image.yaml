@@ -1,13 +1,13 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: build-app-image
+  name: build-image
 spec:
   workspaces:
     - name: cdcon-workspace
   params:
-    - name: DOCKERFILE
-      description: "Path to the dockerfile"
+    - name: APP_PATH
+      description: "Path to the dockerfile within the repo"
   resources:
     outputs:
       - name: app-image
@@ -18,6 +18,6 @@ spec:
       command:
         - /kaniko/executor
       args:
-        - --dockerfile=$(workspaces.cdcon-workspace.path)/$(params.DOCKERFILE)
-        - --destination=$(outputs.resources.app-image.url)
-        - --context=dir://$(workspaces.cdcon-workspace.path)/
+        - --dockerfile=$(workspaces.cdcon-workspace.path)/$(params.APP_PATH)/Dockerfile
+        - --destination=$(resources.outputs.app-image.url)
+#        - --context=dir://$(workspaces.cdcon-workspace.path)/$(params.APP_PATH)
