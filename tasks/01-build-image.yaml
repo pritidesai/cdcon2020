@@ -20,4 +20,4 @@ spec:
       args:
         - --dockerfile=$(workspaces.cdcon-workspace.path)/$(params.APP_PATH)/Dockerfile
         - --destination=$(resources.outputs.app-image.url)
-#        - --context=dir://$(workspaces.cdcon-workspace.path)/$(params.APP_PATH)
+        - --context=dir://$(workspaces.cdcon-workspace.path)/$(params.APP_PATH)
