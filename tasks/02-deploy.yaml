@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy-using-kubectl
+spec:
+  params:
+    - name: SERVICE_FILE
+      description: "path to the service YAML file"
+      type: string
+      default: "services/deploy.yaml"
+  workspaces:
+    - name: cdcon-workspace
+  resources:
+    inputs:
+      - name: app-image
+        type: image
+  steps:
+    - name: update-service-yaml
+      image: alpine
+      command: ["sed"]
+      args:
+        - "-i"
+        - "-e"
+        - "s;__IMAGE__;$(resources.inputs.app-image.path);g"
+        - "$(workspaces.cdcon-workspace.path)/$(params.SERVICE_FILE)"
+    - name: run-kubectl
+      image: lachlanevenson/k8s-kubectl
+      command: ["kubectl"]
+      args:
+        - "apply"
+        - "-f"
+        - "$(workspaces.cdcon-workspace.path)/$(params.SERVICE_FILE)"

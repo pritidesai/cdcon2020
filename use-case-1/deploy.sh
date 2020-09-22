@@ -75,11 +75,14 @@ fi
 # Create Tasks
 # Clone Application Source
 kubectl $OPERATION -f tasks/00-git-clone.yaml
-# Create OpenWhisk Task
-kubectl $OPERATION -f tasks/01-build-app-image.yaml
+# Build Image
+kubectl $OPERATION -f tasks/01-build-image.yaml
+# Deploy
+kubectl $OPERATION -f tasks/02-deploy.yaml
+
 
 # Create Pipeline
-kubectl $OPERATION -f pipelines/pipeline-build-app-image.yaml
+kubectl $OPERATION -f pipelines/pipeline-build-image.yaml
 
 # Run OpenWhisk Pipeline for NodeJS App after replacing DOCKER_USERNAME with user specified name
 sed -e 's/${DOCKER_USERNAME}/'"$DOCKER_USERNAME"'/' use-case-1/pipelinerun.yaml.tmpl > use-case-1/pipelinerun.yaml
