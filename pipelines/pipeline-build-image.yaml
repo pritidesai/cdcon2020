@@ -13,6 +13,9 @@ spec:
     - name: appPath
       description: "use case location"
       type: string
+    - name: nodePort
+      description: "expose service on the specified container port"
+      type: string
 
   workspaces:
     - name: cdcon-workspace
@@ -56,6 +59,9 @@ spec:
       taskRef:
         name: deploy-using-kubectl
       runAfter: [ build-app-image ]
+      params:
+        - name: nodePort
+          value: $(params.nodePort)
       resources:
         inputs:
           - name: app-image

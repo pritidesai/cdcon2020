@@ -47,7 +47,6 @@ spec:
   ports:
     - port: 8080
       name: hello-app-1
-      nodePort: 32426
+      nodePort: __NODEPORT__
   selector:
     app: hello-app-1
-    

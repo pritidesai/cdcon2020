@@ -8,6 +8,8 @@ spec:
       description: "path to the service YAML file"
       type: string
       default: "services/deploy.yaml"
+    - name: nodePort
+      description: "exposing container port"
   workspaces:
     - name: cdcon-workspace
   resources:
@@ -17,12 +19,12 @@ spec:
   steps:
     - name: update-service-yaml
       image: alpine
-      command: ["sed"]
-      args:
-        - "-i"
-        - "-e"
-        - "s;__IMAGE__;$(resources.inputs.app-image.path);g"
-        - "$(workspaces.cdcon-workspace.path)/$(params.serviceFile)"
+      script: |
+        sed -i -e "s;__IMAGE__;$(resources.inputs.app-image.url);g" -e "s;__NODEPORT__;$(params.nodePort);g" $(workspaces.cdcon-workspace.path)/$(params.serviceFile)
+    - name: print-service-yaml
+      image: alpine
+      script: |
+        cat $(workspaces.cdcon-workspace.path)/$(params.serviceFile)
     - name: run-kubectl
       image: lachlanevenson/k8s-kubectl
       command: ["kubectl"]
