@@ -1,23 +1,23 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: 01-build-app-image
+  name: 02-build-image-notify-cleanup
 spec:
   serviceAccountName: cdcon-app-builder
   pipelineRef:
-    name: pipeline-to-build-image
+    name: pipeline-to-build-image-notify-cleanup
   workspaces:
     - name: cdcon-workspace
       persistentVolumeClaim:
         claimName: cdcon-workspace
   params:
     - name: APP_PATH
-      value: "use-case-1/app"
+      value: "use-case-2/app"
   resources:
     - name: app-image
       resourceSpec:
         type: image
         params:
           - name: url
-            value: docker.io/${DOCKER_USERNAME}/cdcon-hello-app:latest
+            value: docker.io/${DOCKER_USERNAME}/cdcon-hello-app-2:latest
 
