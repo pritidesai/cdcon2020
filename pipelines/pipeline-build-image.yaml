@@ -6,11 +6,11 @@ metadata:
 spec:
 
   params:
-    - name: APP_REPO
+    - name: appRepo
       description: "Application repo location"
       type: string
       default: "https://github.com/pritidesai/cdcon2020.git"
-    - name: APP_PATH
+    - name: appPath
       description: "use case location"
       type: string
 
@@ -30,7 +30,7 @@ spec:
         name: git-clone
       params:
         - name: url
-          value: $(params.APP_REPO)
+          value: $(params.appRepo)
       workspaces:
         - name: output
           workspace: cdcon-workspace
@@ -41,8 +41,8 @@ spec:
         name: build-image
       runAfter: [ clone-app-source ]
       params:
-        - name: APP_PATH
-          value: $(params.APP_PATH)
+        - name: appPath
+          value: $(params.appPath)
       resources:
         outputs:
           - name: app-image

@@ -4,7 +4,7 @@ metadata:
   name: deploy-using-kubectl
 spec:
   params:
-    - name: SERVICE_FILE
+    - name: serviceFile
       description: "path to the service YAML file"
       type: string
       default: "services/deploy.yaml"
@@ -22,11 +22,11 @@ spec:
         - "-i"
         - "-e"
         - "s;__IMAGE__;$(resources.inputs.app-image.path);g"
-        - "$(workspaces.cdcon-workspace.path)/$(params.SERVICE_FILE)"
+        - "$(workspaces.cdcon-workspace.path)/$(params.serviceFile)"
     - name: run-kubectl
       image: lachlanevenson/k8s-kubectl
       command: ["kubectl"]
       args:
         - "apply"
         - "-f"
-        - "$(workspaces.cdcon-workspace.path)/$(params.SERVICE_FILE)"
+        - "$(workspaces.cdcon-workspace.path)/$(params.serviceFile)"

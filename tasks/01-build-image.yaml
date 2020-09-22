@@ -6,7 +6,7 @@ spec:
   workspaces:
     - name: cdcon-workspace
   params:
-    - name: APP_PATH
+    - name: appPath
       description: "Path to the dockerfile within the repo"
   resources:
     outputs:
@@ -18,6 +18,6 @@ spec:
       command:
         - /kaniko/executor
       args:
-        - --dockerfile=$(workspaces.cdcon-workspace.path)/$(params.APP_PATH)/Dockerfile
+        - --dockerfile=$(workspaces.cdcon-workspace.path)/$(params.appPath)/Dockerfile
         - --destination=$(resources.outputs.app-image.url)
-        - --context=dir://$(workspaces.cdcon-workspace.path)/$(params.APP_PATH)
+        - --context=dir://$(workspaces.cdcon-workspace.path)/$(params.appPath)
