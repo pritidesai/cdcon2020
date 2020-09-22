@@ -51,6 +51,7 @@ spec:
         - name: cdcon-workspace
           workspace: cdcon-workspace
 
+    # Run e2e Tests
     - name: run-e2e-tests
       taskSpec:
         steps:
@@ -59,10 +60,6 @@ spec:
             script: |
               exit 1
       runAfter: [ build-app-image ]
-      workspaces:
-        - name: cdcon-workspace
-          workspace: cdcon-workspace
-
 
     # Deploy App Image
     - name: deploy-app-image
