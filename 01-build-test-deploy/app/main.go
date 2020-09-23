@@ -13,7 +13,7 @@ func main() {
 
 func HelloServer(w http.ResponseWriter, r *http.Request) {
     t := time.Now()
-    location, err := time.LoadLocation("PST")
+    location, err := time.LoadLocation("America/Los_Angeles")
     if err != nil {
         fmt.Println(err)
     }
