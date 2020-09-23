@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: build-test-deploy-cleanup
+  name: build-test-deploy-cleanup-notify
 
 spec:
 
@@ -64,7 +64,7 @@ spec:
           - name: e2e-tests
             image: "ubuntu"
             script: |
-              exit 1
+              exit 0
       runAfter: [ build-app-image ]
 
     # Deploy App Image
@@ -87,6 +87,7 @@ spec:
 
   finally:
 
+    # Cleanup Shared Workspace
     - name: cleanup
       workspaces:
         - name: cdcon-workspace
@@ -118,3 +119,12 @@ spec:
                 echo "Something went wrong and could not cleanup application source under $(workspaces.cdcon-workspace.path)/"
                 exit 1
               fi
+
+    # Create payload for event listeners depending on the success/failure of build-test-deploy
+    - name: notify-test-results
+      taskSpec:
+        steps:
+          - name: notification
+            image: "ubuntu"
+            script: |
+              echo Sent Slack message with the test results.

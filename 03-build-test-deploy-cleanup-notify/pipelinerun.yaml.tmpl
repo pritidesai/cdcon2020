@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: 03-build-test-deploy-cleanup-notify
+spec:
+  serviceAccountName: cdcon-app-builder
+  pipelineRef:
+    name: build-test-deploy-cleanup
+  workspaces:
+    - name: cdcon-workspace
+      persistentVolumeClaim:
+        claimName: cdcon-workspace
+  params:
+    - name: appPath
+      value: "03-build-test-deploy-cleanup-notify/app"
+    - name: appName
+      value: "cdcon-hello-app-3"
+    - name: nodePort
+      value: "32430"
+  resources:
+    - name: app-image
+      resourceSpec:
+        type: image
+        params:
+          - name: url
+            value: docker.io/${DOCKER_USERNAME}/03-cdcon-hello-app:latest
+
