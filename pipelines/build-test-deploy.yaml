@@ -16,6 +16,9 @@ spec:
     - name: nodePort
       description: "expose service on the specified container port"
       type: string
+    - name: appName
+      description: "deployment label"
+      type: string
 
   workspaces:
     - name: cdcon-workspace
@@ -60,6 +63,8 @@ spec:
         name: deploy-using-kubectl
       runAfter: [ build-app-image ]
       params:
+        - name: appName
+          value: $(params.appName)
         - name: nodePort
           value: $(params.nodePort)
       resources:

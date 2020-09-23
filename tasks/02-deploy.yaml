@@ -8,8 +8,12 @@ spec:
       description: "path to the service YAML file"
       type: string
       default: "services/deploy.yaml"
+    - name: appName
+      description: "deployment label"
+      type: string
     - name: nodePort
       description: "exposing container port"
+      type: string
   workspaces:
     - name: cdcon-workspace
   resources:
@@ -20,7 +24,7 @@ spec:
     - name: update-service-yaml
       image: alpine
       script: |
-        sed -i -e "s;__IMAGE__;$(resources.inputs.app-image.url);g" -e "s;__NODEPORT__;$(params.nodePort);g" $(workspaces.cdcon-workspace.path)/$(params.serviceFile)
+        sed -i -e "s;__IMAGE__;$(resources.inputs.app-image.url);g" -e "s;__APP__;$(params.appName);g" -e "s;__NODEPORT__;$(params.nodePort);g" $(workspaces.cdcon-workspace.path)/$(params.serviceFile)
     - name: print-service-yaml
       image: alpine
       script: |

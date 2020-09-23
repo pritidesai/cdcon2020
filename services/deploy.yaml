@@ -16,18 +16,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-app-1
+  name: __APP__
   labels:
-    app: hello-app-1
+    app: __APP__
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hello-app-1
+      app: __APP__
   template:
     metadata:
       labels:
-        app: hello-app-1
+        app: __APP__
     spec:
       containers:
         - name: cdcon-hello-app
@@ -39,14 +39,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-app-1
+  name: __APP__
   labels:
-    app: hello-app-1
+    app: __APP__
 spec:
   type: NodePort
   ports:
     - port: 8080
-      name: hello-app-1
+      name: __APP__
       nodePort: __NODEPORT__
   selector:
-    app: hello-app-1
+    app: __APP__
