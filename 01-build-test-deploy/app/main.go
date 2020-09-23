@@ -14,7 +14,7 @@ func main() {
 func HelloServer(w http.ResponseWriter, r *http.Request) {
     t := time.Now()
     fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
-    fmt.Fprintln(w,"It's ", t.Format(time.UnixDate), " in my world.")
+    fmt.Fprintln(w,"\nIt's ", t.Format(time.UnixDate), " in my world.")
     fmt.Fprintln(w,"How about you?")
 }
 
