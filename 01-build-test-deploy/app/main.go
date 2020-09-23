@@ -13,12 +13,8 @@ func main() {
 
 func HelloServer(w http.ResponseWriter, r *http.Request) {
     t := time.Now()
-    location, err := time.LoadLocation("America/Los_Angeles")
-    if err != nil {
-        fmt.Println(err)
-    }
     fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
-    fmt.Fprintln(w,"It's ", t.In(location), " in my world.")
+    fmt.Fprintln(w,"It's ", t.Format(time.UnixDate), " in my world.")
     fmt.Fprintln(w,"How about you?")
 }
 
