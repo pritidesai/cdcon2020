@@ -13,8 +13,7 @@ func main() {
 
 func HelloServer(w http.ResponseWriter, r *http.Request) {
     t := time.Now()
-    fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
-    fmt.Fprintln(w,"\nIt's ", t.Format(time.UnixDate), " in my world.")
-    fmt.Fprintln(w,"How about you?")
+    fmt.Fprintf(w, "Hello, %s! ", r.URL.Path[1:])
+    fmt.Fprintln(w,"Local time: ", t.Format(time.UnixDate))
 }
 
