@@ -61,7 +61,7 @@ spec:
           workspace: cdcon-workspace
 
     # Deploy App Image - US East
-    - name: deploy-app-image
+    - name: deploy-app-image-in-us-east
       when:
         - input: "$(params.cluster)"
           operator: in
@@ -83,7 +83,7 @@ spec:
           workspace: cdcon-workspace
 
     # Deploy App Image - US West
-    - name: deploy-app-image
+    - name: deploy-app-image-in-west
       when:
         - input: "$(params.cluster)"
           operator: in
@@ -105,7 +105,7 @@ spec:
           workspace: cdcon-workspace
 
     # Deploy App Image - US Central
-    - name: deploy-app-image
+    - name: deploy-app-image-in-central
       when:
         - input: "$(params.cluster)"
           operator: in
