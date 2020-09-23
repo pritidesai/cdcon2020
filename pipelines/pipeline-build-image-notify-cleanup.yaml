@@ -83,12 +83,36 @@ spec:
   finally:
 
     - name: cleanup
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace
       taskSpec:
+        workspaces:
+          - name: cdcon-workspace
         steps:
-          - name: finish-cleanup
-            image: "ubuntu"
+          - name: list-workspace
+            image: ubuntu
             script: |
-              echo Finished cleaning up the cluster after running e2e tests.
+              ls -1 $(workspaces.cdcon-workspace.path)
+          - name: check-application-dir-has-source
+            image: ubuntu
+            script: |
+              if [ ! -d "$(workspaces.cdcon-workspace.path)/" ]; then
+                echo "Something went wrong and could not find application source under $(workspaces.cdcon-workspace.path)/"
+                exit 1
+              fi
+          - name: cleanup-workspace
+            image: ubuntu
+            script: |
+              rm -rf $(workspaces.cdcon-workspace.path)/*
+          - name: verify-application-dir-has-gone
+            image: ubuntu
+            script: |
+              if [ "$(ls -1 $(workspaces.cdcon-workspace.path))" ]
+              then
+                echo "Something went wrong and could not cleanup application source under $(workspaces.cdcon-workspace.path)/"
+                exit 1
+              fi
 
     - name: notify-test-results
       taskSpec:
