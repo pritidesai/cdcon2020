@@ -1,18 +1,18 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: 01-build-app-image
+  name: 01-build-test-deploy
 spec:
   serviceAccountName: cdcon-app-builder
   pipelineRef:
-    name: pipeline-to-build-image
+    name: build-test-deploy
   workspaces:
     - name: cdcon-workspace
       persistentVolumeClaim:
         claimName: cdcon-workspace
   params:
     - name: appPath
-      value: "use-case-1/app"
+      value: "01-build-test-deploy/app"
     - name: nodePort
       value: "32426"
   resources:
