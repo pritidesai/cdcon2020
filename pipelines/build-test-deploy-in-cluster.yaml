@@ -60,12 +60,56 @@ spec:
         - name: cdcon-workspace
           workspace: cdcon-workspace
 
-    # Deploy App Image
+    # Deploy App Image - US East
     - name: deploy-app-image
       when:
         - input: "$(params.cluster)"
           operator: in
-          values: ["us-west1", "us-east1", "us-central1"]
+          values: [ "us-east1" ]
+      taskRef:
+        name: deploy-using-kubectl
+      runAfter: [ build-app-image ]
+      params:
+        - name: appName
+          value: $(params.appName)
+        - name: nodePort
+          value: $(params.nodePort)
+      resources:
+        inputs:
+          - name: app-image
+            resource: app-image
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace
+
+    # Deploy App Image - US West
+    - name: deploy-app-image
+      when:
+        - input: "$(params.cluster)"
+          operator: in
+          values: [ "us-west1" ]
+      taskRef:
+        name: deploy-using-kubectl
+      runAfter: [ build-app-image ]
+      params:
+        - name: appName
+          value: $(params.appName)
+        - name: nodePort
+          value: $(params.nodePort)
+      resources:
+        inputs:
+          - name: app-image
+            resource: app-image
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace
+
+    # Deploy App Image - US Central
+    - name: deploy-app-image
+      when:
+        - input: "$(params.cluster)"
+          operator: in
+          values: [ "us-central1" ]
       taskRef:
         name: deploy-using-kubectl
       runAfter: [ build-app-image ]
