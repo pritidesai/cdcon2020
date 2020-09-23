@@ -1,23 +1,23 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: 01-build-app-image
+  name: 01-build-and-deploy
 spec:
   serviceAccountName: cdcon-app-builder
   pipelineRef:
-    name: pipeline-to-build-image
+    name: pipeline-to-build-and-deploy
   workspaces:
     - name: cdcon-workspace
       persistentVolumeClaim:
         claimName: cdcon-workspace
   params:
     - name: appPath
-      value: "use-case-1/app"
+      value: "01-build-and-deploy/app"
   resources:
     - name: app-image
       resourceSpec:
         type: image
         params:
           - name: url
-            value: docker.io/${DOCKER_USERNAME}/cdcon-hello-app:latest
+            value: docker.io/${DOCKER_USERNAME}/01-cdcon-hello-app:latest
 

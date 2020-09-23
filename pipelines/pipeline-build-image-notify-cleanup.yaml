@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: pipeline-to-build-image-notify-cleanup
+  name: pipeline-to-build-and-deploy-with-cleanup
 
 spec:
 
