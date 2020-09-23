@@ -12,7 +12,13 @@ func main() {
 }
 
 func HelloServer(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintln(w, "Its ", time.Now())
+    t := time.Now()
+    location, err := time.LoadLocation("PST")
+    if err != nil {
+        fmt.Println(err)
+    }
     fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
+    fmt.Fprintln(w,"It's ", t.In(location), " in my world.")
+    fmt.Fprintln(w,"How about you?")
 }
 
