@@ -22,9 +22,6 @@ spec:
     - name: cluster
       description: "deploy app in this region"
       type: string
-    - name: usEastRegion
-      description: "us east region"
-      type: string
 
   workspaces:
     - name: cdcon-workspace
@@ -68,7 +65,7 @@ spec:
       when:
         - input: "$(params.cluster)"
           operator: in
-          values: ["$(params.usEastRegion)"]
+          values: ["us-west1", "us-east1", "us-central1"]
       taskRef:
         name: deploy-using-kubectl
       runAfter: [ build-app-image ]
