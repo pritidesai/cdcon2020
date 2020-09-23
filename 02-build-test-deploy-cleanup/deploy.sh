@@ -82,12 +82,12 @@ kubectl $OPERATION -f tasks/02-deploy.yaml
 
 
 # Create Pipeline
-kubectl $OPERATION -f pipelines/pipeline-build-image-notify-cleanup.yaml
+kubectl $OPERATION -f pipelines/build-test-deploy-cleanup.yaml
 
 
 # Run OpenWhisk Pipeline for NodeJS App after replacing DOCKER_USERNAME with user specified name
-sed -e 's/${DOCKER_USERNAME}/'"$DOCKER_USERNAME"'/' use-case-2/pipelinerun.yaml.tmpl > use-case-2/pipelinerun.yaml
-kubectl $OPERATION -f use-case-2/pipelinerun.yaml
+sed -e 's/${DOCKER_USERNAME}/'"$DOCKER_USERNAME"'/' 02-build-test-deploy-cleanup/pipelinerun.yaml.tmpl > 02-build-test-deploy-cleanup/pipelinerun.yaml
+kubectl $OPERATION -f 02-build-test-deploy-cleanup/pipelinerun.yaml
 if [ "$OPERATION" = "$DELETE" ]; then
-  rm use-case-2/pipelinerun.yaml
+  rm 02-build-test-deploy-cleanup/pipelinerun.yaml
 fi
