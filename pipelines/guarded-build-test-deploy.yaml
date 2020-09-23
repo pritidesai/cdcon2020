@@ -1,0 +1,113 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: guarded-build-test-deploy
+
+spec:
+
+  params:
+    - name: appRepo
+      description: "Application repo location"
+      type: string
+      default: "https://github.com/pritidesai/cdcon2020.git"
+    - name: appPath
+      description: "use case location"
+      type: string
+    - name: nodePort
+      description: "expose service on the specified container port"
+      type: string
+    - name: appName
+      description: "deployment label"
+      type: string
+    - name: path
+      description: "path of the guard file"
+      type: string
+
+  workspaces:
+    - name: cdcon-workspace
+
+  resources:
+    - name: app-image
+      type: image
+
+# Tasks
+  tasks:
+
+    # Git Clone App Repo
+    - name: clone-app-source
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.appRepo)
+      workspaces:
+        - name: output
+          workspace: cdcon-workspace
+
+    # Check Source for a specific file
+    - name: check-app-source
+      params:
+        - name: path
+          value: "$(params.path)"
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace
+      runAfter:
+        - clone-app-source
+      taskSpec:
+        params:
+          - name: path
+        workspaces:
+          - name: cdcon-workspace
+            description: The workspace to check for the file
+        results:
+          - name: exists
+            description: indicates whether the file exists or is missing
+        steps:
+          - name: check-file
+            image: alpine
+            script: |
+              if test -f $(workspaces.cdcon-workspace.path)/$(params.path); then
+                printf yes | tee /tekton/results/exists
+              else
+                printf no | tee /tekton/results/exists
+              fi
+
+
+    # Build an application, run after git clone if check is successful
+    - name: build-app-image
+      when:
+        - input: $(tasks.check-app-source.results.exists)
+          operator: in
+          values: ["yes"]
+      taskRef:
+        name: build-image
+      runAfter: [ clone-app-source ]
+      params:
+        - name: appPath
+          value: $(params.appPath)
+      resources:
+        outputs:
+          - name: app-image
+            resource: app-image
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace
+
+    # Deploy App Image
+    - name: deploy-app-image
+      taskRef:
+        name: deploy-using-kubectl
+      runAfter: [ build-app-image ]
+      params:
+        - name: appName
+          value: $(params.appName)
+        - name: nodePort
+          value: $(params.nodePort)
+      resources:
+        inputs:
+          - name: app-image
+            resource: app-image
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace
