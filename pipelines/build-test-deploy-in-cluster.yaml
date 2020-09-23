@@ -1,0 +1,86 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-test-deploy-in-cluster
+
+spec:
+
+  params:
+    - name: appRepo
+      description: "Application repo location"
+      type: string
+      default: "https://github.com/pritidesai/cdcon2020.git"
+    - name: appPath
+      description: "use case location"
+      type: string
+    - name: nodePort
+      description: "expose service on the specified container port"
+      type: string
+    - name: appName
+      description: "deployment label"
+      type: string
+    - name: cluster
+      description: "deploy app in this region"
+      type: string
+    - name: usEastRegion
+      description: "us east region"
+      type: string
+
+  workspaces:
+    - name: cdcon-workspace
+
+  resources:
+    - name: app-image
+      type: image
+
+# Tasks
+  tasks:
+
+    # Git Clone App Repo
+    - name: clone-app-source
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.appRepo)
+      workspaces:
+        - name: output
+          workspace: cdcon-workspace
+
+    # Build an application, run after git clone is successful
+    - name: build-app-image
+      taskRef:
+        name: build-image
+      runAfter: [ clone-app-source ]
+      params:
+        - name: appPath
+          value: $(params.appPath)
+      resources:
+        outputs:
+          - name: app-image
+            resource: app-image
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace
+
+    # Deploy App Image
+    - name: deploy-app-image
+      when:
+        - input: "$(params.cluster)"
+          operator: in
+          values: ["$(params.usEastRegion)"]
+      taskRef:
+        name: deploy-using-kubectl
+      runAfter: [ build-app-image ]
+      params:
+        - name: appName
+          value: $(params.appName)
+        - name: nodePort
+          value: $(params.nodePort)
+      resources:
+        inputs:
+          - name: app-image
+            resource: app-image
+      workspaces:
+        - name: cdcon-workspace
+          workspace: cdcon-workspace
