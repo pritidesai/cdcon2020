@@ -90,4 +90,6 @@ sed -e 's/${DOCKER_USERNAME}/'"$DOCKER_USERNAME"'/' 04-build-test-deploy-in-clus
 kubectl $OPERATION -f 04-build-test-deploy-in-cluster/pipelinerun.yaml
 if [ "$OPERATION" = "$DELETE" ]; then
   rm 04-build-test-deploy-in-cluster/pipelinerun.yaml
+  kubectl $OPERATION deployment.apps/cdcon-hello-app-4
+  kubectl $OPERATION service/cdcon-hello-app-4
 fi
