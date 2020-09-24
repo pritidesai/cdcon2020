@@ -13,8 +13,8 @@ func main() {
 
 func HelloServer(w http.ResponseWriter, r *http.Request) {
     t := time.Now()
-    fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
-    fmt.Fprintln(w,"\nLocal time: ", t.Format(time.UnixDate))
-    fmt.Fprintln(w, "This is an app running as part of Tekton Demo for build-test-deploy-cleanup-notify :-)")
+    fmt.Fprintf(w, "\n\nHello, %s!", r.URL.Path[1:])
+    fmt.Fprintln(w,"\n\n\nLocal time: ", t.Format(time.UnixDate))
+    fmt.Fprintln(w, "\n\nThis is an app running as part of Tekton Demo for 05-build-test-deploy-cleanup-notify :-)")
 }
 
