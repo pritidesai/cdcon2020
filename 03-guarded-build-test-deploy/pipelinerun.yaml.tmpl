@@ -1,27 +1,29 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: 02-build-test-deploy-cleanup
+  name: 03-guarded-build-test-deploy
 spec:
   serviceAccountName: cdcon-app-builder
   pipelineRef:
-    name: build-test-deploy-cleanup
+    name: guarded-build-test-deploy
   workspaces:
     - name: cdcon-workspace
       persistentVolumeClaim:
         claimName: cdcon-workspace
   params:
     - name: appPath
-      value: "02-build-test-deploy-cleanup/app"
+      value: "03-guarded-build-test-deploy/app"
     - name: appName
-      value: "cdcon-hello-app-2"
+      value: "cdcon-hello-app-3"
     - name: nodePort
-      value: "32428"
+      value: "32434"
+    - name: path
+      value: "bogus.txt"
   resources:
     - name: app-image
       resourceSpec:
         type: image
         params:
           - name: url
-            value: docker.io/${DOCKER_USERNAME}/02-cdcon-hello-app:latest
+            value: docker.io/${DOCKER_USERNAME}/03-cdcon-hello-app:latest
 

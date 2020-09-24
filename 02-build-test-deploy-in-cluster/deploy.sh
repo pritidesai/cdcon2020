@@ -82,12 +82,14 @@ kubectl $OPERATION -f tasks/02-deploy.yaml
 
 
 # Create Pipeline
-kubectl $OPERATION -f pipelines/guarded-build-test-deploy.yaml
+kubectl $OPERATION -f pipelines/build-test-deploy-in-cluster.yaml
 
 
 # Run OpenWhisk Pipeline for NodeJS App after replacing DOCKER_USERNAME with user specified name
-sed -e 's/${DOCKER_USERNAME}/'"$DOCKER_USERNAME"'/' 05-guarded-build-test-deploy/pipelinerun.yaml.tmpl > 05-guarded-build-test-deploy/pipelinerun.yaml
-kubectl $OPERATION -f 05-guarded-build-test-deploy/pipelinerun.yaml
+sed -e 's/${DOCKER_USERNAME}/'"$DOCKER_USERNAME"'/' 02-build-test-deploy-in-cluster/pipelinerun.yaml.tmpl > 02-build-test-deploy-in-cluster/pipelinerun.yaml
+kubectl $OPERATION -f 02-build-test-deploy-in-cluster/pipelinerun.yaml
 if [ "$OPERATION" = "$DELETE" ]; then
-  rm 05-guarded-build-test-deploy/pipelinerun.yaml
+  rm 02-build-test-deploy-in-cluster/pipelinerun.yaml
+  kubectl $OPERATION deployment.apps/cdcon-hello-app-4
+  kubectl $OPERATION service/cdcon-hello-app-4
 fi
