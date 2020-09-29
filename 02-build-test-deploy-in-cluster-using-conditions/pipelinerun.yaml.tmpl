@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: 02-build-test-deploy-in-cluster-using-conditions
+spec:
+  serviceAccountName: cdcon-app-builder
+  pipelineRef:
+    name: build-test-deploy-in-cluster-using-conditions
+  workspaces:
+    - name: cdcon-workspace
+      persistentVolumeClaim:
+        claimName: cdcon-workspace
+  params:
+    - name: appPath
+      value: "02-build-test-deploy-in-cluster-using-conditions/app"
+    - name: appName
+      value: "cdcon-hello-app-2-1"
+    - name: nodePort
+      value: "32434"
+    - name: cluster
+      value: "us-east1"
+  resources:
+    - name: app-image
+      resourceSpec:
+        type: image
+        params:
+          - name: url
+            value: docker.io/${DOCKER_USERNAME}/02-cdcon-hello-app-1:latest
+
